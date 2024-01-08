@@ -12,8 +12,7 @@ apt-get update
 apt-get install -y qemu-kvm libvirt-daemon-system libvirt-clients bridge-utils virtinst
 
 # Enable and start libvirtd service
-systemctl enable libvirtd
-systemctl start libvirtd
+systemctl enable --now libvirtd
 
 # Add user to the libvirt group
 usermod -aG libvirt $(whoami)
