@@ -17,7 +17,6 @@ check_and_install() {
 # Function to cleanup on error
 cleanup() {
     echo "An error occurred. Cleaning up..."
-    [ -f "$VMWARE_BUNDLE_PATH" ] && rm -f "$VMWARE_BUNDLE_PATH"
     exit 1
 }
 
@@ -33,33 +32,6 @@ REQUIRED_PACKAGES=("curl" "libaio1" "build-essential" "linux-headers-$(uname -r)
 for PACKAGE in "${REQUIRED_PACKAGES[@]}"; do
     check_and_install "$PACKAGE"
 done
-
-# Create Downloads directory if it doesn't exist
-mkdir -p "$HOME/Downloads"
-
-# Download VMware Workstation bundle if not present
-VMWARE_BUNDLE_PATH="$HOME/Downloads/vmware.bundle"
-if [ ! -f "$VMWARE_BUNDLE_PATH" ]; then
-    echo "Downloading VMware Workstation bundle..."
-    if ! curl -A "Mozilla/5.0 (X11; Linux x86_64; rv:109.0) Gecko/20100101 Firefox/115.0" \
-        -o "$VMWARE_BUNDLE_PATH" \
-        -L https://www.vmware.com/go/getworkstation-linux; then
-        echo "Failed to download VMware bundle"
-        exit 1
-    fi
-else
-    echo "VMware Workstation bundle is already downloaded."
-fi
-
-# Verify the bundle exists before proceeding
-if [ ! -f "$VMWARE_BUNDLE_PATH" ]; then
-    echo "VMware bundle not found at $VMWARE_BUNDLE_PATH"
-    exit 1
-fi
-
-# Make the bundle executable and install it
-chmod +x $VMWARE_BUNDLE_PATH
-sudo $VMWARE_BUNDLE_PATH --eulas-agreed --required
 
 # Check if VMware services are enabled and running
 if ! systemctl is-enabled --quiet vmware; then
