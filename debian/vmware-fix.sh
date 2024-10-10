@@ -8,24 +8,15 @@ check_and_install() {
     PACKAGE=$1
     if ! dpkg-query -W -f='${Status}' "$PACKAGE" 2>/dev/null | grep -q "install ok installed"; then
         echo "$PACKAGE is not installed. Installing..."
-        sudo apt install -y "$PACKAGE"
+        sudo apt-get install -y "$PACKAGE"
     else
         echo "$PACKAGE is already installed."
     fi
 }
 
-# Function to cleanup on error
-cleanup() {
-    echo "An error occurred. Cleaning up..."
-    exit 1
-}
-
-# Set trap for error handling
-trap cleanup ERR
-
 # Update and upgrade system
 echo "Updating system packages..."
-sudo apt update && sudo apt full-upgrade -y
+sudo apt-get update && sudo apt-get full-upgrade -y
 
 # Check for required packages and install if missing
 REQUIRED_PACKAGES=("curl" "libaio1" "build-essential" "linux-headers-$(uname -r)" "vlan" "git" "make" "gcc" "dkms" "linux-headers-generic")
@@ -34,14 +25,18 @@ for PACKAGE in "${REQUIRED_PACKAGES[@]}"; do
 done
 
 # Check if VMware services are enabled and running
-if ! systemctl is-enabled --quiet vmware; then
-    echo "Enabling VMware services..."
-    sudo systemctl enable vmware
-fi
+if systemctl list-unit-files | grep -q "vmware.service"; then
+    if ! systemctl is-enabled --quiet vmware; then
+        echo "Enabling VMware services..."
+        sudo systemctl enable vmware
+    fi
 
-if ! systemctl is-active --quiet vmware; then
-    echo "Starting VMware services..."
-    sudo systemctl start vmware
+    if ! systemctl is-active --quiet vmware; then
+        echo "Starting VMware services..."
+        sudo systemctl start vmware
+    fi
+else
+    echo "VMware services not found. Skipping service enablement and start."
 fi
 
 # Get VMware version and patch kernel modules if needed
