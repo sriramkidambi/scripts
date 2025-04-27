@@ -9,7 +9,8 @@ This repository contains a collection of system administration and setup scripts
 ├── android/    # Android development related scripts
 ├── arch/       # Arch Linux specific scripts
 ├── debian/     # Debian specific scripts
-└── fedora/     # Fedora specific scripts
+├── fedora/     # Fedora specific scripts
+├── tests/      # Test scripts for various functionalities
 ```
 
 ## Arch Linux Scripts (`arch/`)
@@ -57,6 +58,20 @@ This repository contains a collection of system administration and setup scripts
 - `fedora.sh`: Fedora specific Android build setup
 - `amke.sh`: Android make utility script
 
+## Test Scripts (`tests/`)
+
+- `s3-test.py`: Script to test S3 connectivity and operations
+  - Tests connection to an S3-compatible server
+  - Performs operations like bucket creation, file upload, download, and deletion
+
+- `postgres-check.py`: Script to test PostgreSQL database connectivity and operations
+  - Tests connection to a PostgreSQL database using a URI
+  - Performs operations like table creation, data insertion, querying, and cleanup
+
+- `dns-test.py`: Script to test DNS server performance
+  - Measures query response times for various DNS servers
+  - Identifies the fastest DNS server for a given domain
+
 ## Usage
 
 Most scripts can be executed directly after making them executable:
@@ -77,4 +92,4 @@ chmod +x script_name
 - Always review scripts before running them
 - Some scripts may modify system configuration
 - Backup important data before running system modification scripts
-- Check script contents for specific requirements and dependencies 
+- Check script contents for specific requirements and dependencies
